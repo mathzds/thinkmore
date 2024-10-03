@@ -7,4 +7,5 @@
 - Features
 
 [x] Can be Create, Update, Delete & Find User
+
 [x] Can User logon with JWT
