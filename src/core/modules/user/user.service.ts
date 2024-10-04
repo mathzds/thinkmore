@@ -4,21 +4,29 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { AppDataSource } from 'src/app/database/handle.database';
 import { User } from './entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   async create(createUserDto: CreateUserDto) {
+    const randomUUID = crypto.randomUUID();
+    const newPublicId = parseInt(randomUUID.substring(0, 8), 16);
+
     const user = await AppDataSource.manager.findOne(User, {
       where: {
-        email: createUserDto.email
+        email: createUserDto.email,
+        publicId: newPublicId
       }
     })
 
     if (user) {
       return { message: 'User already exists' }
     } else {
-      const newUser = AppDataSource.manager.create(User, createUserDto)
+      const newUser = AppDataSource.manager.create(User, {
+        ...createUserDto,
+        publicId: newPublicId,
+        role: "member",
+        createdAt: new Date()
+      })
       await AppDataSource.manager.save(newUser)
       return { message: "User created" }
     }

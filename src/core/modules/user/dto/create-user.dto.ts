@@ -11,10 +11,6 @@ export class CreateUserDto {
     @IsInt()
     publicId?: number
 
-    @IsOptional()
-    @TypeDecorator(() => Date)
-    createdAt?: Date
-
     @IsString()
     @IsNotEmpty()
     name: string
@@ -30,6 +26,10 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     role: "member"
+
+    @IsOptional()
+    @TypeDecorator(() => Date)
+    createdAt?: Date
 
     @IsOptional()
     @IsArray()

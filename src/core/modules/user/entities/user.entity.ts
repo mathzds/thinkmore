@@ -6,7 +6,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ type: "int", default: 0 })
+    @Column({ type: "int", default: 0, unique: true })
     publicId: number
 
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
