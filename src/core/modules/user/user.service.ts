@@ -4,9 +4,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { AppDataSource } from 'src/app/database/handle.database';
 import { User } from './entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly jwtService: JwtService) { }
+
+  async decodeToken(token: string): Promise<number> {
+    const decoded = this.jwtService.verify(token);
+    return decoded.sub;
+  }
+
   async create(createUserDto: CreateUserDto) {
     const randomUUID = crypto.randomUUID();
     const newPublicId = parseInt(randomUUID.substring(0, 8), 16);
@@ -58,7 +66,7 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+    const user = await AppDataSource.manager.findOne(User, { where: { id } });
     if (!user) return { message: "User id not found" };
 
 
