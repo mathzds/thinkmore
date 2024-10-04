@@ -30,10 +30,10 @@ export class UserService {
       return { message: 'User already exists' }
     } else {
       const newUser = AppDataSource.manager.create(User, {
-        ...createUserDto,
         publicId: newPublicId,
         role: "member",
-        createdAt: new Date()
+        createdAt: new Date(),
+        ...createUserDto,
       })
       await AppDataSource.manager.save(newUser)
       return { message: "User created" }

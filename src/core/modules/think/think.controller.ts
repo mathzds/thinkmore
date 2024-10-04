@@ -3,7 +3,6 @@ import { ThinkService } from './think.service';
 import { CreateThinkDto } from './dto/create-think.dto';
 import { UpdateThinkDto } from './dto/update-think.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { JwtService } from '@nestjs/jwt';
 
 @UseGuards(AuthGuard)
 @Controller('think')
