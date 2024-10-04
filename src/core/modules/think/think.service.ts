@@ -7,9 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ThinkService {
-  constructor(
-    private readonly jwtService: JwtService
-  ) { }
+  constructor(private readonly jwtService: JwtService) { }
+
   async decodeToken(token: string): Promise<number> {
     const decoded = this.jwtService.verify(token);
     return decoded.sub;
@@ -35,14 +34,29 @@ export class ThinkService {
     return think;
   }
 
-  async update(id: number, updateThinkDto: UpdateThinkDto) {
-    const think = await this.findOne(id);
+  async findOneOfUser(userId: number) {
+    const think = await AppDataSource.manager.find(Think, { where: { user: { id: userId } } });
+    if (!think) {
+      throw new NotFoundException(`Think with userId ${userId} not found`);
+    }
+    return think;
+  }
+
+  async update(id: number, userId: number, updateThinkDto: UpdateThinkDto) {
+    const think = await AppDataSource.manager.findOne(Think, { where: { id } });
+
+    if (!think) return { message: `Not found` };
+    if (think.user.id !== userId) return { message: `Unauthorized` };
+
     await AppDataSource.manager.update(Think, id, updateThinkDto);
     return { ...think, ...updateThinkDto };
   }
 
-  async remove(id: number) {
-    const think = await this.findOne(id);
+  async remove(id: number, userId: number) {
+    const think = await AppDataSource.manager.findOne(Think, { where: { id } });
+    if (!think) return { message: `Not found` };
+    if (think.user.id !== userId) return { message: `Unauthorized` };
+
     await AppDataSource.manager.delete(Think, id);
     return { message: `Think with ID ${id} removed` };
   }

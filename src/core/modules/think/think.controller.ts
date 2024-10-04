@@ -34,13 +34,22 @@ export class ThinkController {
     return this.thinkService.findOne(+id);
   }
 
+  @Get('user/:userId')
+  async findOneOfUser(@Param('userId') userid: string) {
+    return this.thinkService.findOneOfUser(+userid);
+  }
+
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateThinkDto: UpdateThinkDto) {
-    return this.thinkService.update(+id, updateThinkDto);
+  async update(@Param('id') id: string, @Request() req, @Body() updateThinkDto: UpdateThinkDto) {
+    const token = req.headers.authorization?.split(' ')[1];
+    const userId = await this.thinkService.decodeToken(token);
+    return this.thinkService.update(+id, userId, updateThinkDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.thinkService.remove(+id);
+  async remove(@Param('id') id: string, @Request() req) {
+    const token = req.headers.authorization?.split(' ')[1];
+    const userId = await this.thinkService.decodeToken(token);
+    return this.thinkService.remove(+id, userId);
   }
 }
