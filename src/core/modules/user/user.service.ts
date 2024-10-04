@@ -69,8 +69,4 @@ export class UserService {
     return AppDataSource.manager.delete(User, id)
   }
 
-
-  login() {
-    return { message: "Login" }
-  }
 }

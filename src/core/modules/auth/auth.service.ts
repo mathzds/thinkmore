@@ -19,4 +19,9 @@ export class AuthService {
         const access_token = await this.jwtService.sign(payload);
         return { access_token };
     }
+
+    async getProfileInfo(email: string) {
+        const user = await this.userService.findOne({ email });
+        return user;
+    }
 }

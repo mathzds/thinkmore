@@ -13,8 +13,8 @@ export class Think {
     @Column({ type: "varchar", length: 3000 })
     content: string
 
-    @ManyToOne(() => User, (user) => user.thinks)
-    user: User
+    @ManyToOne(() => User, (user) => user.thinks, { eager: true })
+    user: User;
 
     // @OneToMany(() => ResponseModel, (response) => response.tought)
     // responses!: ResponseModel[];
