@@ -2,17 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-
-import { UserModule } from 'src/core/modules/user/user.module';
-import { ThinkModule } from 'src/core/modules/think/think.module';
-import { AuthModule } from 'src/core/modules/auth/auth.module';
+import { UserModule } from 'src/core/user/user.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from 'src/core/auth/auth.module';
 
 @Module({
-  imports: [UserModule, ThinkModule, AuthModule,
+  imports: [UserModule, AuthModule,
     ThrottlerModule.forRoot([{
-      ttl: 2000,
+      ttl: 200,
       limit: 1,
     }])
   ],

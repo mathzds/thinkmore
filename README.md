@@ -5,18 +5,22 @@ This project is for study purposes only. The concept is simple: post thoughts, i
 
 ## Features
 - [x] Can create, update, delete, and find users
-- [x] Users can log-in with JWT
-- [x] User can be create, update, delete, and find "thinks"
-- [x] Users are restricted from updating or deleting "thinks" created by other users without proper authorization (JWT)
+- [x] Can login with magic-link (need more logic for implemetation)
+- [] Can create, update delete your thinks
+- [] Can invete friend to your group
 
-## Installation
+
+// The awnser is middleware? Cookie
+
 
 ### Prerequisites
 - Node.js
-- PostgreSQL (if using PostgreSQL)
+- SQLite3
 - Docker (optional, for containerization)
 
-### Clone the Repository
+### Running
 ```bash
 git clone https://github.com/yourusername/thinkmore.git
 cd thinkmore
+npm i
+npm run dev
