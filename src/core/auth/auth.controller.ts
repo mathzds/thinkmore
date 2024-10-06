@@ -22,7 +22,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get("me")
   async getProfile(@Request() req) {
-    const userId = req.user.id;
-    return await this.userService.findOneById(userId);
+    const userEmail = req.user.email;
+    return await this.userService.findOneByEmail(userEmail);
   }
 }

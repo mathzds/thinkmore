@@ -22,22 +22,46 @@ export class UserService extends BaseRepository<User> {
   }
 
   async updateUser(id: number, data: UserDto): Promise<User | null> {
-    return this.update(id, data);
+    try {
+      return this.update(id, data);
+    } catch (error) {
+      if (error.code === 'SQLITE_CONSTRAINT') {
+        throw ExceptionsCommon.uniqueConstraint();
+      }
+      throw error;
+    }
   }
 
   async deleteUser(id: number): Promise<void> {
-    await this.delete(id);
+    try {
+      await this.delete(id);
+    } catch (error) {
+      throw error
+    }
   }
 
   async findUserById(id: number): Promise<User | null> {
-    return this.findOneById(id);
+    try {
+      return this.findOneById(id);
+    } catch (error) {
+      throw error
+      
+    }
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return this.findOneByEmail(email);
+    try {
+      return this.findOneByEmail(email);
+    } catch (error) {
+      throw  error
+    }
   }
 
   async findAllUsers(): Promise<User[]> {
-    return this.findAll();
+    try {
+      return this.findAll();
+    } catch (error) {
+      throw error
+    }
   }
 }

@@ -2,23 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
 import UserInterface from 'src/common/interfaces/user.interface';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
     private readonly users = new Map<string, UserInterface>();
 
     constructor(
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private readonly userService: UserService
     ) { }
 
     async magicLink(email: string) {
         const token = randomUUID();
-        const user: UserInterface = { email, id: this.users.size + 1 };
+        console.log(email)
+        const userId = await this.userService.findUserByEmail(email).then((user) => user.id);
+        const user: UserInterface = { email: email, id: userId };
         this.users.set(token, user)
 
         const refLink = `http://localhost:3000/auth/verify/${token}`;
         await this.sendMagicLink(email, refLink);
-        return { message: "Magiclink sent" };
+        return { message: "Magiclink sent", data: { email: email, userId: userId } };
     }
 
     async validateToken(token: string) {
@@ -27,7 +31,7 @@ export class AuthService {
         if (user) {
             this.users.delete(token);
             const jwtToken = this.jwtService.sign({ email: user.email, id: user.id });
-            return { message: "Email verified", email: user.email, token: jwtToken };
+            return { message: "Email verified", email: user.email, id: user.id, token: jwtToken };
         }
 
         return { message: "Invalid token" };
