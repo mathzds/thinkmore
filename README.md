@@ -6,12 +6,7 @@ This project is for study purposes only. The concept is simple: post thoughts, i
 ## Features
 - [x] Can create, update, delete, and find users
 - [x] Can login with magic-link (need more logic for implemetation)
-- [] Can create, update delete your thinks
-- [] Can invete friend to your group
-
-
-// The awnser is middleware? Cookie
-
+- [x] User can't modify another user without your jwt
 
 ### Prerequisites
 - Node.js
