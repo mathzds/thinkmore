@@ -1,8 +1,9 @@
-import { User } from '../../common/entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import ExceptionsCommon from 'src/common/exceptions/exceptions.common';
 import { BaseRepository } from 'src/common/utils/base.repository';
+
+import { UserEntity as User } from '../../common/entities/user.entity';
 
 @Injectable()
 export class UserService extends BaseRepository<User> {
