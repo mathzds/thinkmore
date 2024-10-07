@@ -1,4 +1,4 @@
-import { User } from './entities/user.entity';
+import { User } from '../../common/entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
 import ExceptionsCommon from 'src/common/exceptions/exceptions.common';
@@ -36,6 +36,9 @@ export class UserService extends BaseRepository<User> {
     try {
       await this.delete(id);
     } catch (error) {
+      if (error.code === 'SQLITE_CONSTRAINT') {
+        throw ExceptionsCommon.uniqueConstraint();
+      }
       throw error
     }
   }
@@ -45,7 +48,6 @@ export class UserService extends BaseRepository<User> {
       return this.findOneById(id);
     } catch (error) {
       throw error
-      
     }
   }
 
@@ -53,7 +55,7 @@ export class UserService extends BaseRepository<User> {
     try {
       return this.findOneByEmail(email);
     } catch (error) {
-      throw  error
+      throw error
     }
   }
 

@@ -41,11 +41,20 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.userService.findUserById(id);
+    const userId = id;
+    if (!userId) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return this.userService.findUserById(userId);
   }
 
   @Get('email/:email')
   findByEmail(@Param('email') email: string) {
+    const userEmail = email;
+    if (!userEmail) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return this.userService.findUserByEmail(email);
   }
 
