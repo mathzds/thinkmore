@@ -1,14 +1,15 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 
-import { User } from "src/common/entities/user.entity"
+import { UserEntity as User } from "src/common/entities/user.entity"
+import { ThinkEntity as Think } from "../entities/thinks.entity"
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "database.sqlite",
     synchronize: true,
     logging: true,
-    entities: [User],
+    entities: [User, Think],
 })
 
 export const handleDatabase = async () => {

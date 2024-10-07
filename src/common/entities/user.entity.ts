@@ -1,4 +1,5 @@
-import { BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ThinkEntity } from "./thinks.entity";
 
 export enum Roles {
     member = "member",
@@ -6,28 +7,30 @@ export enum Roles {
 }
 
 @Entity()
-export class User {
+export class UserEntity {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column({ type: "varchar" })
-    name: string
+    name: string;
 
     @Column({ type: "varchar", unique: true })
-    email: string
+    email: string;
 
     @Column({ type: "varchar", default: Roles.member })
-    role: Roles
+    role: Roles;
+
+    @OneToMany(() => ThinkEntity, (think) => think.user)
+    thinks: ThinkEntity[];
 
     @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
-    createdAt: Date
+    createdAt: Date;
 
     @Column({ type: "datetime", nullable: true })
-    updatedAt: Date
+    updatedAt: Date;
 
     @BeforeUpdate()
     updateTimestamp() {
-        this.updatedAt = new Date()
+        this.updatedAt = new Date();
     }
 }
-
