@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
 import UserInterface from 'src/common/interfaces/user.interface';
 import { UserService } from '../user/user.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,8 @@ export class AuthService {
 
     constructor(
         private jwtService: JwtService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly emailService: EmailService
     ) { }
 
     async magicLink(email: string) {
@@ -22,7 +24,7 @@ export class AuthService {
 
         const refLink = `http://localhost:3000/auth/verify/${token}`;
         await this.sendMagicLink(email, refLink);
-        return { message: "Magiclink sent", data: { email: email, userId: userId } };
+        return { message: "Magiclink sent", data: { email: email } };
     }
 
     async validateToken(token: string) {
@@ -38,7 +40,6 @@ export class AuthService {
     }
 
     private async sendMagicLink(email: string, link: string) {
-        // TODO implement smtp viewer
-        return console.log(email, link)
+        return await this.emailService.sendEmail({ email: email, link: link })
     }
 }

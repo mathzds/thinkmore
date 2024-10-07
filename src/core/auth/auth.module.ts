@@ -5,10 +5,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './auth.stategy';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
+    EmailModule,
     PassportModule,
     JwtModule.register({
       secret: "kamina", // TODO implement env variables
