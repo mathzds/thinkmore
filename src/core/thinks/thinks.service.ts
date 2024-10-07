@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ThinksDto } from './dto/think';
 import { UpdateThinkDto } from './dto/update-think.dto';
+import { BaseRepository } from 'src/common/utils/base.repository';
+
+import { ThinkEntity as Thinks } from 'src/common/entities/thinks.entity';
+import { UserEntity } from 'src/common/entities/user.entity';
 
 @Injectable()
-export class ThinksService {
-  create(createThinkDto: ThinksDto) {
-    return 'This action adds a new think';
+export class ThinksService extends BaseRepository<Thinks> {
+  constructor() {
+    super(Thinks)
   }
 
-  findAll() {
-    return `This action returns all thinks`;
+  async createThink(createThinkDto: ThinksDto, user: UserEntity): Promise<Thinks> {
+    const think = await this.create({
+      ...createThinkDto,
+      user
+    })
+    return await this.create(think)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} think`;
+  async findAllThink(): Promise<Thinks[]> {
+    return await this.findAll({
+      relations: ['user'],
+    });
   }
 
-  update(id: number, updateThinkDto: UpdateThinkDto) {
-    return `This action updates a #${id} think`;
+  async findOneThink(id: number): Promise<Thinks | null> {
+    const think = await this.database.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+
+    return think || null;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} think`;
+  async updateThink(owner: number, id: number, updateThinkDto: UpdateThinkDto): Promise<Thinks | string> {
+    const think = await this.findOneThink(id);
+
+    if (!think) {
+      throw new HttpException('Think not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (think.user.id !== owner) {
+      throw new HttpException('Not authorized', HttpStatus.FORBIDDEN);
+    }
+
+    Object.assign(think, updateThinkDto);
+    const updatedThink = await this.update(think.id, think);
+
+    return updatedThink;
   }
+
+  async removeThink(owner: number, id: number): Promise<void> {
+    const think = await this.findOneThink(id);
+
+    if (!think) {
+        throw new HttpException('Think not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!think.user || think.user.id !== owner) {
+        throw new HttpException('Not authorized', HttpStatus.FORBIDDEN);
+    }
+
+    await this.delete(id);
+}
+
 }

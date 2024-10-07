@@ -14,7 +14,7 @@ import { EmailModule } from '../email/email.module';
     PassportModule,
     JwtModule.register({
       secret: "kamina", // TODO implement env variables
-      signOptions: { expiresIn: '15m' },
+      signOptions: { expiresIn: '5h' },
     }),
   ],
   controllers: [AuthController],

@@ -1,5 +1,5 @@
 import { AppDataSource } from "src/common/database/handle.database";
-import { Repository, FindOptionsWhere } from "typeorm";
+import { Repository, FindOptionsWhere, FindManyOptions } from "typeorm";
 
 interface BaseEntity {
     id: number;
@@ -13,8 +13,8 @@ export abstract class BaseRepository<T extends BaseEntity> {
         this.database = AppDataSource.getRepository<T>(this.entity);
     }
 
-    async findAll(): Promise<T[]> {
-        return this.database.find();
+    async findAll(options?: FindManyOptions<T>): Promise<T[]> {
+        return this.database.find(options);
     }
 
     async findOneById(id: number): Promise<T | null> {

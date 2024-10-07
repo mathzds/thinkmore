@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { ThinksService } from './thinks.service';
 import { UpdateThinkDto } from './dto/update-think.dto';
+import { ThinkEntity } from 'src/common/entities/thinks.entity';
+import { JwtAuthGuard } from '../auth/auth.guard';
 import { ThinksDto } from './dto/think';
 
+@UseGuards(JwtAuthGuard)
 @Controller('thinks')
 export class ThinksController {
   constructor(private readonly thinksService: ThinksService) { }
 
   @Post()
-  create(@Body() createThinkDto: ThinksDto) {
-    return this.thinksService.create(createThinkDto);
+  async create(@Request() req, @Body() createThinkDto: ThinksDto): Promise<ThinkEntity> {
+    return await this.thinksService.createThink(createThinkDto, req.user);
   }
 
   @Get()
-  findAll() {
-    return this.thinksService.findAll();
+  async findAll(): Promise<ThinkEntity[]> {
+    return await this.thinksService.findAllThink();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.thinksService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<ThinkEntity> {
+    return await this.thinksService.findOneThink(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateThinkDto: UpdateThinkDto) {
-    return this.thinksService.update(+id, updateThinkDto);
+  async update(@Request() req, @Param('id') id: number, @Body() updateThinkDto: UpdateThinkDto): Promise<ThinkEntity | string> {
+      const owner = req.user.id;
+      return await this.thinksService.updateThink(owner, id, updateThinkDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.thinksService.remove(+id);
+  async remove(@Request() req, @Param('id') id: number): Promise<{ message: string }> {
+      const owner = req.user.id;
+      await this.thinksService.removeThink(owner, id);
+      return { message: 'Think successfully deleted' };
   }
 }
