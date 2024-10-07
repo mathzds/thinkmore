@@ -4,6 +4,7 @@ import ExceptionsCommon from 'src/common/exceptions/exceptions.common';
 import { BaseRepository } from 'src/common/utils/base.repository';
 
 import { UserEntity as User } from '../../common/entities/user.entity';
+import ensureUser from 'src/common/utils/ensure.user';
 
 @Injectable()
 export class UserService extends BaseRepository<User> {
@@ -15,10 +16,7 @@ export class UserService extends BaseRepository<User> {
     try {
       return await this.create(data);
     } catch (error) {
-      if (error.code === 'SQLITE_CONSTRAINT') {
-        throw ExceptionsCommon.uniqueConstraint();
-      }
-      throw error;
+      throw ExceptionsCommon.uniqueConstraint(error);
     }
   }
 
@@ -26,10 +24,7 @@ export class UserService extends BaseRepository<User> {
     try {
       return this.update(id, data);
     } catch (error) {
-      if (error.code === 'SQLITE_CONSTRAINT') {
-        throw ExceptionsCommon.uniqueConstraint();
-      }
-      throw error;
+      throw ExceptionsCommon.uniqueConstraint(error);
     }
   }
 
@@ -37,34 +32,21 @@ export class UserService extends BaseRepository<User> {
     try {
       await this.delete(id);
     } catch (error) {
-      if (error.code === 'SQLITE_CONSTRAINT') {
-        throw ExceptionsCommon.uniqueConstraint();
-      }
-      throw error
+      throw ExceptionsCommon.uniqueConstraint(error);
     }
   }
 
-  async findUserById(id: number): Promise<User | null> {
-    try {
-      return this.findOneById(id);
-    } catch (error) {
-      throw error
-    }
+  async findUserById(id: number): Promise<User> {
+    const user = await this.findOneById(id);
+    return ensureUser(user);
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    try {
-      return this.findOneByEmail(email);
-    } catch (error) {
-      throw error
-    }
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.findOneByEmail(email);
+    return ensureUser(user);
   }
 
   async findAllUsers(): Promise<User[]> {
-    try {
-      return this.findAll();
-    } catch (error) {
-      throw error
-    }
+    return this.findAll();
   }
 }

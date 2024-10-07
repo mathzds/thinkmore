@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, Request, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { JwtAuthGuard } from '../auth/auth.guard';
@@ -16,45 +16,24 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch()
   async update(@Body() data: UpdateUserDto, @Request() req) {
-    const userEmail = req.user.email;
-    const user = await this.userService.findUserByEmail(userEmail);
-
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
+    const user = await this.userService.findUserByEmail(req.user.email);
     return this.userService.updateUser(user.id, data);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete()
   async delete(@Request() req) {
-    const userEmail = req.user.email;
-    const user = await this.userService.findUserByEmail(userEmail);
-
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
+    const user = await this.userService.findUserByEmail(req.user.email);
     return this.userService.deleteUser(user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    const userId = id;
-    if (!userId) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    return this.userService.findUserById(userId);
+  async findOne(@Param('id') id: number) {
+    return this.userService.findUserById(id);
   }
 
   @Get('email/:email')
-  findByEmail(@Param('email') email: string) {
-    const userEmail = email;
-    if (!userEmail) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+  async findByEmail(@Param('email') email: string) {
     return this.userService.findUserByEmail(email);
   }
 

@@ -6,4 +6,4 @@ import { ThinksController } from './thinks.controller';
   controllers: [ThinksController],
   providers: [ThinksService],
 })
-export class ThinksModule {}
+export class ThinksModule { }

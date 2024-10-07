@@ -27,14 +27,14 @@ export class ThinksController {
 
   @Patch(':id')
   async update(@Request() req, @Param('id') id: number, @Body() updateThinkDto: UpdateThinkDto): Promise<ThinkEntity | string> {
-      const owner = req.user.id;
-      return await this.thinksService.updateThink(owner, id, updateThinkDto);
+    const owner = req.user.id;
+    return await this.thinksService.updateThink(owner, id, updateThinkDto);
   }
 
   @Delete(':id')
   async remove(@Request() req, @Param('id') id: number): Promise<{ message: string }> {
-      const owner = req.user.id;
-      await this.thinksService.removeThink(owner, id);
-      return { message: 'Think successfully deleted' };
+    const owner = req.user.id;
+    await this.thinksService.removeThink(owner, id);
+    return { message: 'Think successfully deleted' };
   }
 }
