@@ -13,7 +13,7 @@ import { ThinksModule } from 'src/core/thinks/thinks.module';
   imports: [UserModule, EmailModule, ThinksModule, AuthModule,
     ThrottlerModule.forRoot([{
       ttl: 200,
-      limit: 1,
+      limit: 2,
     }])
   ],
   controllers: [AppController],
